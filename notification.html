@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="firework.css">
+    <title>Muse聊天室</title>
+    <script>
+        window.addEventListener("message", receiveMessage, false);
+
+        function receiveMessage(event) {
+            switch (event.data.event) {
+                case "UserJoin":
+                    console.log("User join!");
+                    console.log(`Name: ${event.data.userName}`);
+                    addWelcomeWording(event.data.userName);
+                    playVideo(playerJoin);
+                    break;
+                case "UserLeave":
+                    console.log("User leave!");
+                    console.log(`Name: ${event.data.userName}`);
+                    addLeaveWording(event.data.userName);
+                    playVideo(playerLeave);
+                    break;
+                case "NyanRun":
+                    console.log("Got Nyan running");
+                    console.log(`Caller name: ${event.data.userName}`);
+                    nyanCatRun(event.data.userName);
+                    break;
+                case "TestEvent":
+                    console.log("Got test event!");
+                    console.log(event)
+                    break;
+            }
+        }
+
+        function playVideo(player) {
+            player.seekTo(0);
+            player.playVideo();
+        }
+
+        function addWelcomeWording(userName) {
+            console.log("New user come!");
+            const welcomeContainer = document.getElementById("welcome-container");
+            const welcomeTextDiv = document.createElement("div");
+            welcomeTextDiv.className = "welcomeTextDiv fade-in";
+            welcomeTextDiv.innerText = `歡迎 ${userName} 來到Muse聊天室!`;
+
+            if (userName.includes("Yishian")) {
+                console.log("Yishian joined!");
+                startFirework();
+            }
+
+            welcomeContainer.append(welcomeTextDiv);
+            setTimeout(function(){
+                welcomeTextDiv.className = "fade-out";
+                setTimeout(function(){
+                    welcomeTextDiv.style.display = "none";
+                    welcomeTextDiv.remove();
+                }, 2000);
+            }, 10000);
+        }
+
+        function addLeaveWording(userName) {
+            console.log("User left!");
+            const welcomeContainer = document.getElementById("welcome-container");
+            const welcomeTextDiv = document.createElement("div");
+            welcomeTextDiv.className = "welcomeTextDiv fade-in";
+            if (userName.length === 0) {
+                userName = "有人";
+            }
+            welcomeTextDiv.innerText = `${userName} 已經離開了!`;
+
+            welcomeContainer.append(welcomeTextDiv);
+            setTimeout(function(){
+                welcomeTextDiv.className = "fade-out";
+                setTimeout(function(){
+                    welcomeTextDiv.style.display = "none";
+                    welcomeTextDiv.remove();
+                }, 2000);
+            }, 10000);
+        }
+
+        function startFirework() {
+            document.getElementById("wording").className = "pyro";
+            setTimeout(function() {
+                document.getElementById("wording").className = "";
+            }, 10000);
+        }
+
+        function nyanCatRun(name) {
+
+            console.log("running!")
+            document.getElementById("nyan-cat-container").className = "";
+            if (name !== undefined) {
+                document.getElementById("nyan-text").innerText = name;
+                document.getElementById("nyan-text").style.left = (name.length * -1) + '%';
+
+            } else {
+                document.getElementById("nyan-text").innerText = "";
+            }
+            setTimeout(function() {
+                document.getElementById("nyan-cat-container").className = "running";
+            }, 200);
+
+        }
+
+        function getNextNyanCatRunning() {
+            let nextTimeMs = (Math.floor(Math.random() * 300) + 300) * 1000;
+            console.log(`Next nyan cat after ${nextTimeMs} ms`);
+            const dateTime = new Date();
+            dateTime.setUTCMilliseconds(dateTime.getUTCMilliseconds() + nextTimeMs);
+            console.log(`Next nyan cat at ${dateTime.toLocaleString()}`);
+
+            setTimeout(function() {
+                nyanCatRun();
+
+                getNextNyanCatRunning();
+            }, nextTimeMs)
+
+        }
+
+        getNextNyanCatRunning();
+
+        function setupOffSchoolAlert() {
+            const now = new Date();
+            const offSchoolTime = new Date();
+            offSchoolTime.setUTCHours(10, 0, 0, 0);
+
+            const diffMs = offSchoolTime.valueOf() - now.valueOf();
+            if (diffMs < 0) {
+                console.log("It's already off!");
+                return;
+            }
+            console.log(`OffSchool ${offSchoolTime}. diffMs: ${diffMs}`);
+            setTimeout(function() {
+                playerJoin.loadVideoById("RRtsLCFN8gg")
+            }, diffMs);
+        }
+
+        setupOffSchoolAlert();
+
+    </script>
+    <style>
+        html, body {
+            height: 100%;
+        }
+        body::-webkit-scrollbar {
+            display: none;
+        }
+        #wording {
+            width: 100%;
+            height: 100%;
+            color: #FFFFFF;
+            font-weight: bold;
+            font-family: "微軟正黑體";
+            font-size: 50px;
+            text-align: center;
+        }
+        #room-title {
+            font-size: 100px;
+        }
+        .fade-in{
+            -webkit-animation: fadein 1s;
+        }
+        .fade-out{
+            -webkit-animation: fadeout 2s;
+        }
+
+        @keyframes fadein {
+            from { opacity: 0; }
+            to   { opacity: 1; }
+        }
+
+        @keyframes fadeout {
+            from { opacity: 1; }
+            to   { opacity: 0; }
+        }
+
+        #nyan-cat-container {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            left: -500px;
+        }
+
+        #nyan-cat-container > img {
+            height: 200px;
+        }
+
+        #nyan-text {
+            position: absolute;
+            top: 41%;
+            left: -2%;
+            font-size: 50px;
+            color: #FFFFFF;
+            background-color: #77BE94;
+        }
+
+        .running {
+            animation-name: running;
+            animation-duration: 10s;
+        }
+
+        @keyframes running {
+            from {
+                left: -500px;
+            }
+            to {
+                left: 1200px;
+            }
+
+        }
+
+    </style>
+</head>
+<body style="background-color: #77BE94;overflow-y: scroll;">
+    <div id="wording" style="" class="">
+        <div id="room-title">Muse聊天室</div>
+        <div id="welcome-container"></div>
+<!--        <img src="error.gif" style="width: 400px; display: ">-->
+
+        <div class="before"></div>
+        <div class="after"></div>
+<!--        <div id="misc-container">召喚清單: Grace</div>-->
+    </div>
+<!--全家  PaS3Zz2NAdo -->
+<!--Yahoo    Fm5FE0x9eY0 -->
+
+<div id="player-join"></div>
+<div id="player-leave"></div>
+
+<script>
+    var tag = document.createElement('script');
+
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    let playerJoin;
+    let playerLeave;
+    function onYouTubeIframeAPIReady() {
+        playerJoin = new YT.Player('player-join', {
+            height: '300',
+            width: '500',
+            videoId: 'PaS3Zz2NAdo',
+            events: {
+                'onReady': onPlayerReady,
+                'onStateChange': onPlayerStateChange
+            }
+        });
+
+        playerLeave = new YT.Player('player-leave', {
+            height: '300',
+            width: '500',
+            videoId: 'Fm5FE0x9eY0',
+            events: {
+                'onReady': onPlayerReady,
+                'onStateChange': onPlayerStateChange
+            }
+        });
+    }
+
+    function onPlayerReady(event) {
+        event.target.setVolume(5);
+    }
+
+    function onPlayerStateChange(event) {
+        if (event.data == YT.PlayerState.ENDED) {
+            console.log("ENDED!");
+        }
+    }
+    function stopVideo() {
+        player.stopVideo();
+    }
+</script>
+<div id="nyan-cat-container">
+    <div id="nyan-text"></div>
+    <img src="nyan-cat.gif" alt="nyan cat"/>
+</div>
+
+</body>
+</html>
