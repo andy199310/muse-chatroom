@@ -27,6 +27,14 @@
                     console.log(`Caller name: ${event.data.userName}`);
                     nyanCatRun(event.data.userName);
                     break;
+                case "AddMessage":
+                    console.log("Add message");
+                    addMessage(event.data.message)
+                    break;
+                case "RemoveMessage":
+                    console.log("Remove message");
+                    removeMessage(event.data.messagePosition);
+                    break;
                 case "TestEvent":
                     console.log("Got test event!");
                     console.log(event)
@@ -50,6 +58,11 @@
                 console.log("Yishian joined!");
                 startFirework();
             }
+
+            // if (userName.includes("Susan")) {
+            //     console.log("Susan joined!");
+            //     startFirework();
+            // }
 
             welcomeContainer.append(welcomeTextDiv);
             setTimeout(function(){
@@ -140,6 +153,20 @@
 
         setupOffSchoolAlert();
 
+        function addMessage(message) {
+            const messageContainer = document.getElementById("message-container");
+            const messageDiv = document.createElement("li");
+            messageDiv.innerText = message;
+            messageContainer.append(messageDiv);
+        }
+
+        function removeMessage(position) {
+            const messageContainer = document.getElementById("message-container");
+            if (messageContainer.children.item(position) !== undefined) {
+                messageContainer.children.item(position).remove();
+            }
+        }
+
     </script>
     <style>
         html, body {
@@ -212,14 +239,25 @@
 
         }
 
+        #message-container {
+            list-style-position: inside;
+            font-size: 0.6em;
+        }
+
     </style>
 </head>
 <body style="background-color: #77BE94;overflow-y: scroll;">
     <div id="wording" style="" class="">
         <div id="room-title">Muse聊天室</div>
         <div id="welcome-container"></div>
-<!--        <img src="error.gif" style="width: 400px; display: ">-->
 
+        <div>
+            <ol id="message-container" start="0">
+                <li>!留言 {文字} 可以留言</li>
+                <li>!刪留言 {數字} 可以刪留言</li>
+                <li>Muse冰箱上線囉</li>
+            </ol>
+        </div>
         <div class="before"></div>
         <div class="after"></div>
 <!--        <div id="misc-container">召喚清單: Grace</div>-->

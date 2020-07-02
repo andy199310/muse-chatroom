@@ -45,6 +45,28 @@ function onUserJoined(event) {
         windowRef.postMessage(payload, "*");
     }
 
+    if (joinText.includes("!留言")) {
+        const message = joinText.substring(joinText.indexOf("!留言") + 3);
+        console.log(`Add message ${message}`);
+        const payload = {
+            event: "AddMessage",
+            message: message
+        }
+        windowRef.postMessage(payload, "*");
+    }
+
+    if (joinText.includes("!刪留言")) {
+        const messagePosition = parseInt(joinText.substring(joinText.indexOf("!刪留言") + 4));
+        if (!isNaN(messagePosition)) {
+            console.log(`Remove message at ${messagePosition}`);
+            const payload = {
+                event: "RemoveMessage",
+                messagePosition: messagePosition
+            }
+            windowRef.postMessage(payload, "*");
+        }
+    }
+
     if (!joinText.includes("joined")) {
         console.log("No user join! stop!");
         return;
