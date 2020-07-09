@@ -29,7 +29,7 @@
                     break;
                 case "AddMessage":
                     console.log("Add message");
-                    addMessage(event.data.message)
+                    addMessage(event.data.message, event.data.userName)
                     break;
                 case "RemoveMessage":
                     console.log("Remove message");
@@ -153,10 +153,13 @@
 
         setupOffSchoolAlert();
 
-        function addMessage(message) {
+        function addMessage(message, userName) {
             const messageContainer = document.getElementById("message-container");
             const messageDiv = document.createElement("li");
             messageDiv.innerText = message;
+            const authorSpan = document.createElement("span");
+            authorSpan.innerText = ` - ${userName}`;
+            messageDiv.append(authorSpan);
             messageContainer.append(messageDiv);
         }
 
@@ -244,6 +247,10 @@
             font-size: 0.6em;
         }
 
+        #message-container > li > span {
+            font-size: 0.5em;
+        }
+
     </style>
 </head>
 <body style="background-color: #77BE94;overflow-y: scroll;">
@@ -253,9 +260,9 @@
 
         <div>
             <ol id="message-container" start="0">
-                <li>!留言 {文字} 可以留言</li>
-                <li>!刪留言 {數字} 可以刪留言</li>
-                <li>Muse冰箱上線囉</li>
+                <li>!留言 {文字} 可以留言<span> - Green</span></li>
+                <li>!刪留言 {數字} 可以刪留言<span> - Green</span></li>
+                <li>Muse冰箱留言板上線囉<span> - Green</span></li>
             </ol>
         </div>
         <div class="before"></div>

@@ -47,10 +47,12 @@ function onUserJoined(event) {
 
     if (joinText.includes("!留言")) {
         const message = joinText.substring(joinText.indexOf("!留言") + 3);
-        console.log(`Add message ${message}`);
+        const userName = joinText.substring(0, joinText.indexOf("!留言"));
+        console.log(`Add message ${message} from ${userName}`);
         const payload = {
             event: "AddMessage",
-            message: message
+            message: message,
+            userName: userName
         }
         windowRef.postMessage(payload, "*");
     }
