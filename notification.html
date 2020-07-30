@@ -14,7 +14,12 @@
                     console.log("User join!");
                     console.log(`Name: ${event.data.userName}`);
                     addWelcomeWording(event.data.userName);
-                    playVideo(playerJoin);
+                    // if(event.data.userName.includes("Eric")) {
+                    //     playVideoInterval(playerSpecial, 3, 12000)
+                    // } else {
+                        playVideo(playerJoin);
+                    // }
+
                     break;
                 case "UserLeave":
                     console.log("User leave!");
@@ -47,6 +52,14 @@
             player.playVideo();
         }
 
+        function playVideoInterval(player, startSecond, duration) {
+            player.playVideo()
+            player.seekTo(startSecond);
+            setTimeout(function () {
+                player.pauseVideo();
+            }, duration)
+        }
+
         function addWelcomeWording(userName) {
             console.log("New user come!");
             const welcomeContainer = document.getElementById("welcome-container");
@@ -59,8 +72,8 @@
                 startFirework();
             }
 
-            // if (userName.includes("Susan")) {
-            //     console.log("Susan joined!");
+            // if (userName.includes("Eric")) {
+            //     console.log("Eric joined!");
             //     startFirework();
             // }
 
@@ -81,6 +94,8 @@
             welcomeTextDiv.className = "welcomeTextDiv fade-in";
             if (userName.length === 0) {
                 userName = "有人";
+                console.log("No user name!");
+                return;
             }
             welcomeTextDiv.innerText = `${userName} 已經離開了!`;
 
@@ -260,8 +275,8 @@
 
         <div>
             <ol id="message-container" start="0">
-                <li>!留言 {文字} 可以留言<span> - Green</span></li>
-                <li>!刪留言 {數字} 可以刪留言<span> - Green</span></li>
+<!--                <li>!留言 {文字} 可以留言<span> - Green</span></li>-->
+<!--                <li>!刪留言 {數字} 可以刪留言<span> - Green</span></li>-->
                 <li>Muse冰箱留言板上線囉<span> - Green</span></li>
             </ol>
         </div>
@@ -274,6 +289,7 @@
 
 <div id="player-join"></div>
 <div id="player-leave"></div>
+<div id="player-special"></div>
 
 <script>
     var tag = document.createElement('script');
@@ -284,6 +300,7 @@
 
     let playerJoin;
     let playerLeave;
+    let playerSpecial;
     function onYouTubeIframeAPIReady() {
         playerJoin = new YT.Player('player-join', {
             height: '300',
@@ -304,13 +321,25 @@
                 'onStateChange': onPlayerStateChange
             }
         });
+
+        playerSpecial = new YT.Player('player-special', {
+            height: '300',
+            width: '500',
+            videoId: '4ed2TLDDLzg',
+            events: {
+                'onReady': onPlayerReady,
+                'onStateChange': onPlayerStateChange
+            }
+        });
     }
 
     function onPlayerReady(event) {
         event.target.setVolume(5);
+        playerSpecial.setVolume(15)
     }
 
     function onPlayerStateChange(event) {
+        console.log(event);
         if (event.data == YT.PlayerState.ENDED) {
             console.log("ENDED!");
         }
